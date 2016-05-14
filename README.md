@@ -1,5 +1,5 @@
 # Secure NGINX config for WordPress
-Virtual-host configuration template with customizations for WordPress. Scores A+ on [Qualys SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=easypath.ca).
+Virtual-host configuration template with customizations for WordPress. Scores A+ on [Qualys SSL Labs](https://www.ssllabs.com/ssltest/).
 
 ## Browser/client support
 This configuration only supports modern clients and browsers. Legacy clients, including Internet Explorer 9 or below on Windows XP, are **not** supported. To modify legacy-client support, tweak the SSL cipher list (see [here for more info](https://cipherli.st/)).
