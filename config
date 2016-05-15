@@ -5,6 +5,9 @@ server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
 
+        # Hide version information
+        server_tokens off;
+
 	# Not using $host variable as it's set by the client, potentially insecure
 	server_name <domain_name>.ca www.<domain_name>.ca;
 
@@ -45,6 +48,9 @@ server {
 server {
 	listen 443 ssl http2;
 	listen [::]:443 ssl http2;
+
+        # Hide version information
+        server_tokens off;
 
 	# PEM contains signed server certificate and chain
 	ssl_certificate /webapps/<domain_name>/ssl/<domain_name>.ca.pem;
