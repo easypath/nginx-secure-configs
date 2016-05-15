@@ -69,7 +69,13 @@ server {
 	ssl_dhparam /etc/nginx/ssl/dhparam.pem;
 
 	# HSTS
-	add_header Strict-Transport-Security max-age=15768000;
+	add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+
+	# Deters click-jacking
+	add_header X-Frame-Options DENY;
+	
+	# Deters MIME-type confusion attacks
+	add_header X-Content-Type-Options nosniff;
 
 	# OCSP stapling
 	ssl_stapling on;
