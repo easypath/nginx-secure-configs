@@ -9,7 +9,8 @@ server {
 	server_tokens off;
 
 	# Not using $host variable as it's set by the client, potentially insecure
-	server_name <domain_name> www.<domain_name>;
+	# Do not add <domain_name> without "www", causes chained 301 redirects; test at https://www.gtmetrix.com
+	server_name www.<domain_name>;
 
 	# SSL enabled, redirect HTTP to HTTPS
 	return 301 https://$server_name$request_uri;
