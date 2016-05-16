@@ -1,12 +1,53 @@
 # EasyPath NGINX virtual host configuration
 # Customized for PHP/WordPress running behind CloudFlare's CDN (https://www.cloudflare.com)
 
-# CloudFlare is handling the HTTP to HTTPS redirect using a page rule; the HTTP server-block can be kept to a minimum
-# See https://support.cloudflare.com/hc/en-us/articles/200170536-How-do-I-redirect-all-visitors-to-HTTPS-SSL-
+# CloudFlare can also do the HTTP to HTTPS redirect, however it seems to cause chained 301 redirects
+# i.e. http://<domain_name> to https://<domain_name> to https://www.<domain_name>, which is bad for SEO
+# Can test for chained 301 redirects at https://www.gtmetrix.com
 
 server {
 	listen 80;
 	listen [::]:80;
+
+	# Hide version information
+	server_tokens off;
+
+	# Not using $host variable as it's set by the client, potentially insecure
+	# Do not add <domain_name> without "www", causes chained 301 redirects
+	server_name www.<domain_name>;
+
+	# SSL enabled, redirect HTTP to HTTPS
+	return 301 https://$server_name$request_uri;
+
+	# Logging
+	access_log /webapps/<domain_name>/logs/access.log;
+	error_log /webapps/<domain_name>/logs/error.log;
+
+	# Prevent serving files beginning with a “.”
+	# Do not log attempt
+	location ~ /\. {
+		access_log off;
+		log_not_found off;
+		deny all;
+	}
+
+	# Prevent serving files beginning with a “$”
+	# Do not log attempt
+	location ~ ~$ {
+		access_log off;
+		log_not_found off;
+		deny all;
+	}
+
+	# Prevent logging whenever favicon & robots.txt files are accessed
+	location = /robots.txt {
+		log_not_found off;
+	}
+
+	location = /favicon.ico {
+		access_log off;
+		log_not_found off;
+	}
 }
 
 server {
