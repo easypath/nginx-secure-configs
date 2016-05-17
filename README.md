@@ -9,6 +9,9 @@ The templates only support modern clients and browsers. Legacy clients, includin
 * SSL certificate
 
 ### Template notes
+#### General:
+* SEO best-practice is to do a "Class B" redirect, i.e. redirect bare-domains (without www) to **www**.domain.com (see [here](https://blog.codingoutloud.com/2010/07/26/4-reasons-to-embrace-the-www-subdomain-prefix-in-your-web-addresses-and-how-to-do-it-right/) for more info)
+
 #### WordPress:
 * Requires PHP7.0 FPM
 * Tested with WordPress 4.5.2
@@ -17,7 +20,6 @@ The templates only support modern clients and browsers. Legacy clients, includin
 #### CloudFlare:
 * Requires a free or paid account
 * CloudFlare can also redirect HTTP to HTTPS using a page rule, however in testing this seems to cause chained-301 redirects - i.e. http://example.com to https://example.com to https://www.example.com
-* SEO best-practice is to do a "Class B" redirect, i.e. redirect "bare" domains - without "www" - to www.example.com (see [here](https://blog.codingoutloud.com/2010/07/26/4-reasons-to-embrace-the-www-subdomain-prefix-in-your-web-addresses-and-how-to-do-it-right/) for more info)
 * Pre-configured to restore the visitor's original IP; the list of CloudFlare IP addresses must be periodically updated (see [here](https://support.cloudflare.com/hc/en-us/articles/200170706-How-do-I-restore-original-visitor-IP-with-Nginx-) for more info)
 
 ### Credits
