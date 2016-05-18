@@ -114,9 +114,6 @@ server {
 	access_log /webapps/<domain_name>/logs/access.log;
 	error_log /webapps/<domain_name>/logs/error.log;
 
-	# DNS resolvers
-	resolver 8.8.8.8 8.8.4.4;
-
 	# Prevent serving files beginning with a “.”
 	# Do not log attempt
 	location ~ /\. {
