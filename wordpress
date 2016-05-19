@@ -1,57 +1,9 @@
 # EasyPath NGINX virtual host configuration
-# Customizations for PHP & WordPress
-
-server {
-	listen 80;
-	listen [::]:80;
-
-	# Hide version information
-	server_tokens off;
-
-	# Not using $host variable as it's set by the client, potentially insecure
-	# Do not add <domain_name> without "www", causes chained 301 redirects; test at https://www.gtmetrix.com
-	server_name www.<domain_name>;
-
-	# SSL enabled, redirect HTTP to HTTPS
-	return 301 https://$server_name$request_uri;
-
-	# Logging
-	access_log /webapps/<domain_name>/logs/access.log;
-	error_log /webapps/<domain_name>/logs/error.log;
-
-	# Prevent serving files beginning with a “.”
-	# Do not log attempt
-	location ~ /\. {
-		access_log off;
-		log_not_found off;
-		deny all;
-	}
-
-	# Prevent serving files beginning with a “$”
-	# Do not log attempt
-	location ~ ~$ {
-		access_log off;
-		log_not_found off;
-		deny all;
-	}
-
-	# Prevent logging whenever favicon & robots.txt files are accessed
-	location = /robots.txt {
-		log_not_found off;
-	}
-
-	location = /favicon.ico {
-		access_log off;
-		log_not_found off;
-	}
-}
+# Customized for PHP/WordPress
 
 server {
 	listen 443 ssl http2 default_server;
 	listen [::]:443 ssl http2 default_server;
-
-	# Hide version information
-	server_tokens off;
 
 	# PEM contains signed server certificate and chain
 	ssl_certificate /webapps/<domain_name>/ssl/<domain_name>.pem;
@@ -79,7 +31,7 @@ server {
 	add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
 
 	# Deters click-jacking
-	# Do not set to DENY, otherwise causes issues in WP-Admin
+	# Do not set to DENY, otherwise causes issues in WordPress WP-Admin
 	add_header X-Frame-Options SAMEORIGIN;
 	
 	# Deters MIME-type confusion attacks
@@ -101,12 +53,12 @@ server {
 		try_files $uri $uri/ /index.php?$args;
 	}
 
-	# For PHP/WordPress
+	# For PHP
 	# Pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
 	location ~ \.php$ {
 		include snippets/fastcgi-php.conf;
 
-		# PHP7.0-FPM:
+		# PHP7.0-FPM
 		fastcgi_pass unix:/run/php/php7.0-fpm.sock;
 	}
 
@@ -139,4 +91,22 @@ server {
 		access_log off;
 		log_not_found off;
 	}
+}
+
+# Redirect all HTTP traffic to HTTPS
+# Always redirect to www.<domain_name>, not bare-domain (without "www") according to SEO best-practices
+server {
+	listen 80;
+	listen [::]:80;
+
+	return 301 https://www.<domain_name>$request_uri;
+}
+
+# Redirect bare-domain HTTPS to https://www.<domain_name>
+server {
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
+
+	server_name <domain_name>;
+	return 301 https://www.<domain_name>$request_uri;
 }
